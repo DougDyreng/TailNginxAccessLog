@@ -1,0 +1,14 @@
+#!/bin/bash
+tail -fn0 /usr/local/var/log/nginx/access.log | while read log ; do
+        if [ $? = 0 ]
+        then
+			IFS=' ' read -a LogElements <<< $(echo $log | tr -d [])
+
+			logdate=$(date -j -f "%d/%b/%Y:%H:%M:%S" ${LogElements[3]} "+%Y-%m-%d %H:%M:%S")
+			statuscode=${LogElements[8]}
+			statusgroup=${statuscode:0:1}xx
+			sqlinsert=$(echo "mysql -uroot -D dd -e 'INSERT INTO logs(LogDateTime,Status,StatusGroup) VALUES(\"$logdate\",$statuscode,\"$statusgroup\");'")
+			eval $sqlinsert
+        fi
+done
+
