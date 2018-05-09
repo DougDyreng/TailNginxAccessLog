@@ -14,5 +14,3 @@ FROM
 FROM logs AS e
 GROUP BY e.StatusGroup,DATE_FORMAT(LogDateTime, '%Y-%m-%d %H:%i')) totals
 ORDER BY totals.StatusGroup,totals.LogsByMinute;
-
--- SELECT * FROM dd.logs
